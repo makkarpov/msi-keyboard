@@ -55,6 +55,9 @@ static void printUsage(const string &self) {
     cerr << self << " gaming <left>" << endl;
     cerr << self << " breathing <left> <middle> <right>" << endl;
     cerr << self << " wave <left> <middle> <right>" << endl;
+#ifdef WIN32
+    cerr << self << " auto" << endl;
+#endif
     cerr << endl;
     cerr << "All colors can be specified either in HEX form (rrggbb) or as hue (hXXX)" << endl;
     cerr << "Breathing and wave mode also accepts color pairs (first-second) as argument" << endl;
@@ -71,6 +74,10 @@ int main(int argc, char **argv) {
         kbd.breathing(parseColorPair(argv[2]), parseColorPair(argv[3]), parseColorPair(argv[4]));
     } else if (argc == 5 && strcmp(argv[1], "wave") == 0 && isColorPair(argv[2]) && isColorPair(argv[3]) && isColorPair(argv[4])) {
         kbd.wave(parseColorPair(argv[2]), parseColorPair(argv[3]), parseColorPair(argv[4]));
+#ifdef WIN32
+    } else if (argc == 2 && strcmp(argv[1], "auto") == 0) {
+        kbd.automatic();
+#endif
     } else {
         printUsage(argv[0]);
         return 1;

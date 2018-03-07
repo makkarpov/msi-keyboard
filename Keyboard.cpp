@@ -89,3 +89,28 @@ void Keyboard::wave(ColorPair left, ColorPair middle, ColorPair right) {
     write_gradient(REGION_RIGHT, right.first, right.second);
     write_mode(MODE_WAVE);
 }
+
+#ifdef WIN32
+static Color get_saturated_color(int r, int g, int b) {
+    const auto v = 1.45;
+    const auto gray = 0.2989 * r + 0.5870 * g + 0.1140 * b;
+    r = -gray * v + r * (1 + v);
+    g = -gray * v + g * (1 + v);
+    b = -gray * v + b * (1 + v);
+
+    r = max(0, min(255, r));
+    g = max(0, min(255, g));
+    b = max(0, min(255, b));
+
+    return { static_cast<uint8_t>(r), static_cast<uint8_t>(g), static_cast<uint8_t>(b) };
+}
+
+void Keyboard::automatic() {
+    DWORD colorization;
+    BOOL unused;
+    if (FAILED(DwmGetColorizationColor(&colorization, &unused))) { return; }
+    const auto color = get_saturated_color(colorization >> 16 & 0xFF, colorization >> 8 & 0xFF, colorization & 0xFF);
+    this->normal(color, color, color);
+}
+
+#endif
