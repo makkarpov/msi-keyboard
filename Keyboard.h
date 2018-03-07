@@ -5,6 +5,11 @@
 #include <utility>
 #include "Color.h"
 
+#ifdef WIN32
+#include <Windows.h>
+#include <dwmapi.h>
+#endif
+
 class Keyboard {
     hid_device *_dev;
 
@@ -40,6 +45,10 @@ public:
     void breathing(ColorPair left, ColorPair middle, ColorPair right);
     void wave(Color left, Color middle, Color right);
     void wave(ColorPair left, ColorPair middle, ColorPair right);
+
+#ifdef WIN32
+    void automatic();
+#endif
 };
 
 
